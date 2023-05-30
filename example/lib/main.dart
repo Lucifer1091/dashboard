@@ -210,22 +210,22 @@ class _DashboardWidgetState extends State<DashboardWidget> {
                         borderRadius: BorderRadius.circular(15))),
                 physics: const RangeMaintainingScrollPhysics(),
                 editModeSettings: EditModeSettings(
-                    paintBackgroundLines: true,
-                    resizeCursorSide: 15,
-                    curve: Curves.easeOut,
-                    duration: const Duration(milliseconds: 300),
-                    backgroundStyle: const EditModeBackgroundStyle(
-                        lineColor: Colors.black38,
-                        lineWidth: 0.5,
-                        dualLineHorizontal: true,
-                        dualLineVertical: true)),
+                  paintBackgroundLines: true,
+                  resizeCursorSide: 15,
+                  curve: Curves.easeOut,
+                  duration: const Duration(milliseconds: 300),
+                  backgroundStyle: const EditModeBackgroundStyle(
+                    lineColor: Colors.black38,
+                    lineWidth: 0.5,
+                    dualLineHorizontal: true,
+                    dualLineVertical: true,
+                  ),
+                ),
                 itemBuilder: (ColoredDashboardItem item) {
                   var layout = item.layoutData;
 
                   if (item.data != null) {
-                    return DataWidget(
-                      item: item,
-                    );
+                    return DataWidget(item: item);
                   }
 
                   return Stack(

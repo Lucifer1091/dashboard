@@ -70,46 +70,36 @@ class _AddDialogState extends State<AddDialog> {
                   height: 20,
                 ),
                 ElevatedButton(
-                    onPressed: () {
-                      if (values[0] < values[2]) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("width >= minWidth is not true.")));
-                        return;
-                      }
-                      if (values[1] < values[3]) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("height >= minHeight is not true.")));
-                        return;
-                      }
-                      if (values[4] != 0 && values[0] > values[4]) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("width <= maxWidth is not true.")));
-                        return;
-                      }
-                      if (values[5] != 0 && values[1] > values[5]) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content:
-                                    Text("height <= maxHeight is not true.")));
-                        return;
-                      }
+                  onPressed: () {
+                    if (values[0] < values[2]) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("width >= minWidth is not true.")));
+                      return;
+                    }
+                    if (values[1] < values[3]) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("height >= minHeight is not true.")));
+                      return;
+                    }
+                    if (values[4] != 0 && values[0] > values[4]) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("width <= maxWidth is not true.")));
+                      return;
+                    }
+                    if (values[5] != 0 && values[1] > values[5]) {
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("height <= maxHeight is not true.")));
+                      return;
+                    }
 
-                      Navigator.pop(context, values..add(color));
-                    },
-                    child: const Padding(
-                      padding:
-                          EdgeInsets.symmetric(vertical: 8, horizontal: 30),
-                      child: Text("Add"),
-                    )),
-                const SizedBox(
-                  height: 20,
+                    Navigator.pop(context, values..add(color));
+                  },
+                  child: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 30),
+                    child: Text("Add"),
+                  ),
                 ),
+                const SizedBox(height: 20),
               ],
             ),
           ),
