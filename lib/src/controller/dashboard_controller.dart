@@ -141,7 +141,7 @@ class DashboardItemController<T extends DashboardItem> with ChangeNotifier {
   }
 
   ///
-  late Map<String, T> _items;
+  Map<String, T> _items = {};
 
   /// Get all items.
   ///
