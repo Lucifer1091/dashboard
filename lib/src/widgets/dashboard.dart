@@ -390,12 +390,12 @@ class _DashboardState<T extends DashboardItem> extends State<Dashboard<T>>
       builder: (context, constrains) {
         Unbounded.check(Axis.vertical, constrains);
         if (_withDelegate) {
-          if (_snap!.connectionState == ConnectionState.none) {
+          if (_snap?.connectionState == ConnectionState.none) {
             _building = false;
             return widget.errorPlaceholder
                     ?.call(_snap!.error!, _snap!.stackTrace!) ??
                 const SizedBox();
-          } else if (_snap!.connectionState == ConnectionState.waiting ||
+          } else if (_snap?.connectionState == ConnectionState.waiting ||
               _reloading) {
             _building = false;
 
