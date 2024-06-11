@@ -108,7 +108,13 @@ class _DashboardStackState<T extends DashboardItem>
 
   void addWidget(String id) {
     var i = widget.dashboardController.itemController._items[id];
-    var l = widget.dashboardController._layouts![i!.identifier]!;
+
+    if (i == null) return;
+
+    var l = widget.dashboardController._layouts?[i.identifier]!;
+
+    if (l == null) return;
+
     i.layoutData = l.asLayout();
 
     _widgetsMap[id] = [
