@@ -264,25 +264,27 @@ class _DashboardState<T extends DashboardItem> extends State<Dashboard<T>>
             _layoutController.shrinkToPlace != widget.shrinkToPlace) &&
         !_reloading) {
       _layoutController.attach(
-          shrinkOnMove: widget.editModeSettings.shrinkOnMove,
-          animateEverytime: widget.animateEverytime,
-          slideToTop: widget.slideToTop,
-          shrinkToPlace: widget.shrinkToPlace,
-          axis: Axis.vertical,
-          itemController: widget.dashboardItemController,
-          slotCount: widget.slotCount);
+        shrinkOnMove: widget.editModeSettings.shrinkOnMove,
+        animateEverytime: widget.animateEverytime,
+        slideToTop: widget.slideToTop,
+        shrinkToPlace: widget.shrinkToPlace,
+        axis: Axis.vertical,
+        itemController: widget.dashboardItemController,
+        slotCount: widget.slotCount,
+      );
       _setOnNextFrame();
     }
 
     if (!_layoutController._isAttached) {
       _layoutController.attach(
-          shrinkOnMove: widget.editModeSettings.shrinkOnMove,
-          animateEverytime: widget.animateEverytime,
-          slideToTop: widget.slideToTop,
-          shrinkToPlace: widget.shrinkToPlace,
-          axis: Axis.vertical,
-          itemController: widget.dashboardItemController,
-          slotCount: widget.slotCount);
+        shrinkOnMove: widget.editModeSettings.shrinkOnMove,
+        animateEverytime: widget.animateEverytime,
+        slideToTop: widget.slideToTop,
+        shrinkToPlace: widget.shrinkToPlace,
+        axis: Axis.vertical,
+        itemController: widget.dashboardItemController,
+        slotCount: widget.slotCount,
+      );
       _setOnNextFrame();
     }
 
@@ -316,7 +318,9 @@ class _DashboardState<T extends DashboardItem> extends State<Dashboard<T>>
     _maxExtend -= constraints.maxHeight;
 
     offset.applyContentDimensions(
-        0, _maxExtend.clamp(0, double.maxFinite) + widget.padding.vertical);
+      0,
+      _maxExtend.clamp(0, double.maxFinite) + widget.padding.vertical,
+    );
   }
 
   ///
@@ -356,91 +360,96 @@ class _DashboardState<T extends DashboardItem> extends State<Dashboard<T>>
           if (_reloadFor == widget.slotCount) {
             _reloading = false;
             _layoutController.attach(
-                shrinkOnMove: widget.editModeSettings.shrinkOnMove,
-                animateEverytime: widget.animateEverytime,
-                slideToTop: widget.slideToTop,
-                shrinkToPlace: widget.shrinkToPlace,
-                axis: Axis.vertical,
-                itemController: widget.dashboardItemController,
-                slotCount: widget.slotCount);
-          }
-        });
-      } else {
-        if (_reloadFor == widget.slotCount) {
-          _reloading = false;
-          _layoutController.attach(
               shrinkOnMove: widget.editModeSettings.shrinkOnMove,
               animateEverytime: widget.animateEverytime,
               slideToTop: widget.slideToTop,
               shrinkToPlace: widget.shrinkToPlace,
               axis: Axis.vertical,
               itemController: widget.dashboardItemController,
-              slotCount: widget.slotCount);
+              slotCount: widget.slotCount,
+            );
+          }
+        });
+      } else {
+        if (_reloadFor == widget.slotCount) {
+          _reloading = false;
+          _layoutController.attach(
+            shrinkOnMove: widget.editModeSettings.shrinkOnMove,
+            animateEverytime: widget.animateEverytime,
+            slideToTop: widget.slideToTop,
+            shrinkToPlace: widget.shrinkToPlace,
+            axis: Axis.vertical,
+            itemController: widget.dashboardItemController,
+            slotCount: widget.slotCount,
+          );
         }
       }
     }
 
-    return LayoutBuilder(builder: (context, constrains) {
-      Unbounded.check(Axis.vertical, constrains);
-      if (_withDelegate) {
-        if (_snap!.connectionState == ConnectionState.none) {
-          _building = false;
-          return widget.errorPlaceholder
-                  ?.call(_snap!.error!, _snap!.stackTrace!) ??
-              const SizedBox();
-        } else if (_snap!.connectionState == ConnectionState.waiting ||
-            _reloading) {
-          _building = false;
+    return LayoutBuilder(
+      builder: (context, constrains) {
+        Unbounded.check(Axis.vertical, constrains);
+        if (_withDelegate) {
+          if (_snap?.connectionState == ConnectionState.none) {
+            _building = false;
+            return widget.errorPlaceholder
+                    ?.call(_snap!.error!, _snap!.stackTrace!) ??
+                const SizedBox();
+          } else if (_snap?.connectionState == ConnectionState.waiting ||
+              _reloading) {
+            _building = false;
 
-          return widget.loadingPlaceholder ??
-              const Center(
-                child: CircularProgressIndicator(),
-              );
+            return widget.loadingPlaceholder ??
+                const Center(
+                  child: CircularProgressIndicator(),
+                );
+          }
         }
-      }
-      if (widget.dashboardItemController._items.isEmpty) {
-        return widget.dashboardItemController.isEditing ? dashboardWidget(constrains) : widget.emptyPlaceholder ?? const SizedBox();
-      }
+        if (widget.dashboardItemController._items.isEmpty) {
+          return widget.dashboardItemController.isEditing
+              ? dashboardWidget(constrains)
+              : widget.emptyPlaceholder ?? const SizedBox();
+        }
 
-      return dashboardWidget(constrains);
-    });
+        return dashboardWidget(constrains);
+      },
+    );
   }
 
   Widget dashboardWidget(BoxConstraints constrains) {
     return Scrollable(
-        physics: scrollable
-            ? widget.physics
-            : const NeverScrollableScrollPhysics(),
-        key: _scrollableKey,
-        controller: widget.scrollController,
-        semanticChildCount: widget.dashboardItemController._items.length,
-        dragStartBehavior:
-        widget.dragStartBehavior ?? DragStartBehavior.start,
-        scrollBehavior: widget.scrollBehavior,
-        viewportBuilder: (c, o) {
-          if (!_reloading) _setNewOffset(o, constrains);
-          WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-            _stateKey.currentState?._listenOffset(o);
-          });
-          _building = false;
-          return _DashboardStack<T>(
-              itemStyle: widget.itemStyle,
-              shouldCalculateNewDimensions: () {
-                _setNewOffset(o, constrains);
-              },
-              onScrollStateChange: (st) {
-                setState(() {
-                  scrollable = st;
-                });
-              },
-              maxScrollOffset: _maxExtend,
-              editModeSettings: widget.editModeSettings,
-              cacheExtend: widget.cacheExtend,
-              key: _stateKey,
-              itemBuilder: widget.itemBuilder,
-              dashboardController: _layoutController,
-              offset: offset);
+      physics:
+          scrollable ? widget.physics : const NeverScrollableScrollPhysics(),
+      key: _scrollableKey,
+      controller: widget.scrollController,
+      semanticChildCount: widget.dashboardItemController._items.length,
+      dragStartBehavior: widget.dragStartBehavior ?? DragStartBehavior.start,
+      scrollBehavior: widget.scrollBehavior,
+      viewportBuilder: (c, o) {
+        if (!_reloading) _setNewOffset(o, constrains);
+        WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+          _stateKey.currentState?._listenOffset(o);
         });
+        _building = false;
+        return _DashboardStack<T>(
+            itemStyle: widget.itemStyle,
+            shouldCalculateNewDimensions: () {
+              _setNewOffset(o, constrains);
+            },
+            onScrollStateChange: (st) {
+              setState(() {
+                scrollable = st;
+              });
+            },
+            maxScrollOffset: _maxExtend,
+            editModeSettings: widget.editModeSettings,
+            cacheExtend: widget.cacheExtend,
+            key: _stateKey,
+            itemBuilder: widget.itemBuilder,
+            dashboardController: _layoutController,
+            offset: offset);
+      },
+    );
   }
 }
 

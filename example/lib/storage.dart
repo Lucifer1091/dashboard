@@ -335,15 +335,15 @@ class MyItemStorage extends DashboardItemStorageDelegate<ColoredDashboardItem> {
   Map<int, Map<String, ColoredDashboardItem>>? _localItems;
 
   @override
-  FutureOr<List<ColoredDashboardItem>> getAllItems(int slotCount) {
+  FutureOr<List<ColoredDashboardItem>> getAllItems(int slotCount) async {
     try {
+      _preferences = await SharedPreferences.getInstance();
+
       if (_localItems != null) {
         return _localItems![slotCount]!.values.toList();
       }
 
       return Future.microtask(() async {
-        _preferences = await SharedPreferences.getInstance();
-
         var init = _preferences.getBool("init") ?? false;
 
         if (!init) {

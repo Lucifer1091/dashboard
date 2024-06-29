@@ -47,11 +47,11 @@ class DashboardItemController<T extends DashboardItem> with ChangeNotifier {
   /// The [isEditing] does not have to be true to add or delete items.
   ///
   /// Use as setter to change [isEditing] value.
-  bool get isEditing => _layoutController!.isEditing;
+  bool get isEditing => _layoutController?.isEditing ?? false;
 
   /// Change editing status.
   set isEditing(bool value) {
-    _layoutController!.isEditing = value;
+    _layoutController?.isEditing = value;
   }
 
   /// Add new item to Dashboard.
@@ -70,7 +70,7 @@ class DashboardItemController<T extends DashboardItem> with ChangeNotifier {
   void add(T item, {bool mountToTop = true}) {
     if (_isAttached) {
       _items[item.identifier] = item;
-      _layoutController!.add(item, mountToTop);
+      _layoutController?.add(item, mountToTop);
       itemStorageDelegate?._onItemsAdded(
           [_getItemWithLayout(item.identifier)], _layoutController!.slotCount);
     } else {
@@ -141,7 +141,7 @@ class DashboardItemController<T extends DashboardItem> with ChangeNotifier {
   }
 
   ///
-  late Map<String, T> _items;
+  Map<String, T> _items = {};
 
   /// Get all items.
   ///
@@ -341,13 +341,16 @@ class _DashboardLayoutController<T extends DashboardItem> with ChangeNotifier {
   }
 
   void add(DashboardItem item, [bool mountToTop = true]) {
-    _layouts![item.identifier] = _ItemCurrentLayout(item.layoutData);
+    _layouts?[item.identifier] = _ItemCurrentLayout(item.layoutData);
     this.mountToTop(
-        item.identifier,
-        mountToTop
-            ? 0
-            : getIndex(
-                [_adjustToPosition(item.layoutData), item.layoutData.startY]));
+      item.identifier,
+      mountToTop
+          ? 0
+          : getIndex([
+              _adjustToPosition(item.layoutData),
+              item.layoutData.startY,
+            ]),
+    );
     notifyListeners();
   }
 
@@ -363,7 +366,7 @@ class _DashboardLayoutController<T extends DashboardItem> with ChangeNotifier {
 
   void addAll(List<DashboardItem> items, {bool mountToTop = true}) {
     for (var item in items) {
-      _layouts![item.identifier] = _ItemCurrentLayout(item.layoutData);
+      _layouts?[item.identifier] = _ItemCurrentLayout(item.layoutData);
 
       int startX;
 
@@ -824,14 +827,15 @@ class _DashboardLayoutController<T extends DashboardItem> with ChangeNotifier {
   late bool animateEverytime;
 
   ///
-  void attach(
-      {required Axis axis,
-      required DashboardItemController<T> itemController,
-      required int slotCount,
-      required bool slideToTop,
-      required bool shrinkToPlace,
-      required bool animateEverytime,
-      required bool? shrinkOnMove}) {
+  void attach({
+    required Axis axis,
+    required DashboardItemController<T> itemController,
+    required int slotCount,
+    required bool slideToTop,
+    required bool shrinkToPlace,
+    required bool animateEverytime,
+    required bool? shrinkOnMove,
+  }) {
     this.shrinkOnMove = shrinkOnMove;
     this.itemController = itemController;
     this.slideToTop = slideToTop;
